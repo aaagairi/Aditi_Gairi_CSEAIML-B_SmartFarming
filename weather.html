@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Forecast - Smart Farming</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="/">Smart Farming</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/weather">Weather Forecast</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/crop_yield">Crop Yield</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/dashboard">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/about">About</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <h1 class="mb-4">7-Day Weather Forecast for Farming</h1>
+        
+        {% if error %}
+        <div class="alert alert-danger">
+            {{ error }}
+        </div>
+        {% endif %}
+        
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">Enter Location</h5>
+                    </div>
+                    <div class="card-body">
+                        <form method="post">
+                            <div class="mb-3">
+                                <label for="city" class="form-label">City or Village Name</label>
+                                <input type="text" class="form-control" id="city" name="city" 
+                                       placeholder="Enter your location" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Get Forecast</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0">How It Works</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>Our weather forecast system uses advanced machine learning to predict weather conditions that affect farming:</p>
+                        <ul>
+                            <li>Real-time data from meteorological APIs</li>
+                            <li>Temperature predictions based on rainfall and wind patterns</li>
+                            <li>Automated alerts for high-risk farming conditions</li>
+                            <li>7-day forecast to help plan farming activities</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        {% if forecast %}
+        <div class="card mb-4">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">7-Day Farming Forecast</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    {% for day in forecast %}
+                    <div class="col-md-6 col-lg-3 mb-3">
+                        <div class="card h-100 {% if day.alerts %}border-warning{% else %}border-success{% endif %}">
+                            <div class="card-header {% if day.alerts %}bg-warning{% else %}bg-success{% endif %} text-white">
+                                <h5 class="mb-0">{{ day.date }}</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <div>
+                                        <h2 class="mb-0">{{ day.predicted_temperature }}°C</h2>
+                                        <p class="text-muted mb-0">Predicted Temperature</p>
+                                    </div>
+                                    <div class="text-center">
+                                        {% if day.precipitation > 10 %}
+                                        <i class="fas fa-cloud-showers-heavy fa-3x text-primary"></i>
+                                        {% elif day.precipitation > 0 %}
+                                        <i class="fas fa-cloud-rain fa-3x text-primary"></i>
+                                        {% elif day.temperature > 30 %}
+                                        <i class="fas fa-sun fa-3x text-warning"></i>
+                                        {% else %}
+                                        <i class="fas fa-cloud-sun fa-3x text-info"></i>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-2">
+                                    <div class="d-flex justify-content-between">
+                                        <span>Rainfall:</span>
+                                        <span>{{ day.precipitation }} mm</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <div class="d-flex justify-content-between">
+                                        <span>Wind Speed:</span>
+                                        <span>{{ day.wind_speed }} km/h</span>
+                                    </div>
+                                </div>
+                                
+                                {% if day.alerts %}
+                                <div class="alert alert-warning mb-0">
+                                    <h6 class="mb-1"><i class="fas fa-exclamation-triangle"></i> Alerts:</h6>
+                                    <ul class="mb-0 ps-3">
+                                        {% for alert in day.alerts %}
+                                        <li>{{ alert }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                                {% else %}
+                                <div class="alert alert-success mb-0">
+                                    <i class="fas fa-check-circle"></i> No farming alerts
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div class="card-footer">
+                                <h6 class="mb-1">Farming Recommendation:</h6>
+                                <p class="mb-0 small">
+                                    {% if day.alerts %}
+                                        {% if "High temperature" in day.alerts[0] %}
+                                        Provide additional irrigation and consider shade for sensitive crops.
+                                        {% elif "Heavy rain" in day.alerts[0] %}
+                                        Ensure proper drainage and postpone fertilizer application.
+                                        {% elif "High wind" in day.alerts[0] %}
+                                        Secure structures and delay spraying operations.
+                                        {% endif %}
+                                    {% else %}
+                                        Favorable conditions for regular farming activities.
+                                    {% endif %}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        
+    </div>
+    
+    <footer class="bg-dark text-white mt-5 py-3">
+        <div class="container text-center">
+            <p>© 2025 Smart Farming System</p>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

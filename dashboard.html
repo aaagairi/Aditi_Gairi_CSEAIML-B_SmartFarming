@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Smart Farming</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">Smart Farming</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/weather">Weather Forecast</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/crop_yield">Crop Yield</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/dashboard">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/about">About</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <h1 class="mb-4">Farm Analytics Dashboard</h1>
+        
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">Weather Trends</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="weatherChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0">Crop Yield Comparison</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="cropChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0">Farming Recommendations</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Weather</th>
+                                        <th>Recommendation</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for i in range(weather_data.dates|length) %}
+                                    <tr>
+                                        <td>{{ weather_data.dates[i] }}</td>
+                                        <td>{{ weather_data.temperatures[i] }}°C, {{ weather_data.rainfall[i] }}mm rain</td>
+                                        <td>
+                                            {% if weather_data.temperatures[i] > 30 and weather_data.rainfall[i] < 5 %}
+                                            Increase irrigation to combat heat stress
+                                            {% elif weather_data.rainfall[i] > 10 %}
+                                            Monitor field drainage; delay fertilizer application
+                                            {% elif weather_data.temperatures[i] < 20 %}
+                                            Watch for cold stress in sensitive crops
+                                            {% else %}
+                                            Favorable conditions for standard operations
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer class="bg-dark text-white mt-5 py-3">
+        <div class="container text-center">
+            <p>© 2025 Smart Farming System</p>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Weather chart
+        const weatherCtx = document.getElementById('weatherChart').getContext('2d');
+        const weatherChart = new Chart(weatherCtx, {
+            type: 'line',
+            data: {
+                labels: {{ weather_data.dates|tojson }},
+                datasets: [
+                    {
+                        label: 'Temperature (°C)',
+                        data: {{ weather_data.temperatures|tojson }},
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                        yAxisID: 'y',
+                    },
+                    {
+                        label: 'Rainfall (mm)',
+                        data: {{ weather_data.rainfall|tojson }},
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        yAxisID: 'y1',
+                    }
+                ]
+            },
+            options: {
+                scales: {
+                    y: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        title: {
+                            display: true,
+                            text: 'Temperature (°C)'
+                        }
+                    },
+                    y1: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        grid: {
+                            drawOnChartArea: false,
+                        },
+                        title: {
+                            display: true,
+                            text: 'Rainfall (mm)'
+                        }
+                    }
+                }
+            }
+        });
+        
+        // Crop yield chart
+        const cropCtx = document.getElementById('cropChart').getContext('2d');
+        const cropChart = new Chart(cropCtx, {
+            type: 'bar',
+            data: {
+                labels: {{ crop_data.crops|tojson }},
+                datasets: [{
+                    label: 'Yield (tons per hectare)',
+                    data: {{ crop_data.yields|tojson }},
+                    backgroundColor: [
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(153, 102, 255, 0.2)',
+                        'rgba(255, 159, 64, 0.2)',
+                        'rgba(255, 205, 86, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgb(75, 192, 192)',
+                        'rgb(153, 102, 255)',
+                        'rgb(255, 159, 64)',
+                        'rgb(255, 205, 86)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Yield (tons per hectare)'
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
