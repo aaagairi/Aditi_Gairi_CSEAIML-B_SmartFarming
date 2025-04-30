@@ -30,9 +30,40 @@
 - Government crop data (from [data.gov.in](https://data.gov.in))
 
 ---
+### ▶️ Steps to Run the Project
 
-### ▶️ Steps to Run the Project  
-1. Clone the repository or download the source code.  
-2. Set up a Python environment with required libraries:  
+1. **Clone this repository**
    ```bash
-   pip install -r requirements.txt
+   git clone https://github.com/aaagairi/smart-farming-using-ai.git
+   cd smart-farming-using-ai
+   ```
+
+2. **Install required Python libraries**  
+   *(You can manually install from the notebook cells or create a `requirements.txt` using pip freeze)*  
+   ```bash
+   pip install flask scikit-learn pandas numpy matplotlib seaborn
+   ```
+
+3. **Run the Jupyter Notebooks to train and test the models**  
+   - Open and run `Crop_Yield_Prediction.ipynb`  
+   - Open and run `Weather_Forecast_Model.ipynb`  
+   These notebooks contain model training and evaluation logic.
+
+4. **Start the Flask server**  
+   ```bash
+   python app.py
+   ```  
+   This will launch your backend locally (usually at `http://127.0.0.1:5000`).
+
+5. **Access the HTML pages via browser**  
+   - `index.html`: Landing page  
+   - `weather.html`: Weather forecasting interface  
+   - `crop_yield.html`: Crop yield prediction interface  
+   - `dashboard.html`: Summary dashboard (optional)
+
+6. **Test the backend APIs**  
+   You can use a browser or tools like **Postman** to test Flask routes. Make sure the server is running.
+
+7. **(Optional) Modify or deploy**  
+   - You can deploy this Flask app to platforms like **Render**, **Replit**, or **Heroku** for public access.
+```
