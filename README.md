@@ -1,42 +1,38 @@
-🧑‍🤝‍🧑 Team Members:
-Aditi Gairi – 2301730104
-Ritika Pal – 2301730071
+# Smart Farming Using AI
 
-📝 Short Project Description:
-Smart Farming Using AI is a purely software-based solution designed to assist farmers by forecasting weather and predicting crop yields using machine learning models. By analyzing historical agricultural and meteorological data, the platform offers actionable insights to support better farming decisions, enhance productivity, and reduce uncertainty.
+---
 
-🎥 Link to Video Explanation:
-Watch Video Explanation
+### 🧑‍🤝‍🧑 Team Members  
+**Aditi Gairi** – 2301730104  
+**Ritika Pal** – 2301730071  
 
-🧰 Technologies Used:
-Python
+---
 
-Google Colab / Jupyter Notebook
+### 📝 Short Project Description  
+**Smart Farming Using AI** is a software-based solution designed to assist farmers by predicting crop yields and forecasting weather using machine learning models. The system provides actionable insights based on historical agricultural and meteorological data, aiming to improve planning and productivity.
 
-Scikit-learn (for ML models)
+---
 
-SVR (Support Vector Regression) – Weather Forecasting
+### 🎥 Link to Video Explanation  
+[Click here to watch the video explanation](https://drive.google.com/file/d/1YNB5Opj98IWfXtn45XYMNz7foKfTS4Ud/view?usp=sharing)
 
-Random Forest – Crop Yield Prediction
+---
 
-Flask (Backend API)
+### 🧰 Technologies Used  
+- Python  
+- Google Colab / Jupyter Notebook  
+- Scikit-learn (for ML models)  
+- SVR (Support Vector Regression) for weather forecasting  
+- Random Forest for crop yield prediction  
+- Flask (for backend API)  
+- HTML/CSS  
+- Open-Meteo API (for weather data)  
+- Government crop data (from [data.gov.in](https://data.gov.in))
 
-HTML/CSS (Optional Frontend)
+---
 
-Open-Meteo API (Weather Data Source)
-
-Government Crop Data (from data.gov.in)
-
-▶️ Steps to Run the Project:
-Clone the repository or download the source code.
-
-Set up a Python environment with the required libraries:
-pip install -r requirements.txt
-
-Open and run the Google Colab or Jupyter Notebook to train and test models.
-
-Launch the Flask server to expose prediction APIs.
-
-(Optional) Use Postman or connect a frontend to test API responses.
-
-View predictions and evaluate model performance.
+### ▶️ Steps to Run the Project  
+1. Clone the repository or download the source code.  
+2. Set up a Python environment with required libraries:  
+   ```bash
+   pip install -r requirements.txt
